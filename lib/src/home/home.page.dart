@@ -11,6 +11,24 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: 'logout',
+                  child: Text('Log Out'),
+                )
+              ];
+            },
+            onSelected: (String choice) {
+              switch (choice) {
+                case 'logout':
+                  Provider.of<AuthController>(context, listen: false).signOut();
+              }
+            },
+          ),
+        ],
       ),
     );
   }

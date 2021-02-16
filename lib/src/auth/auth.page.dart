@@ -105,7 +105,7 @@ class _AuthPageState extends State<AuthPage> {
                 children: [
                   Expanded(
                     child: RaisedButton(
-                      onPressed: login,
+                      onPressed: anon,
                       child: Text('Just take me to the app!'),
                     ),
                   ),
