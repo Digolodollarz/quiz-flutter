@@ -40,6 +40,8 @@ class _QuizResultPageState extends State<QuizResultPage> {
       body: FutureBuilder<Quiz>(
         future: _quiz,
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return Center(child: CircularProgressIndicator());
           if (snapshot.hasError) return Text('Error: ${snapshot.error}');
           if (!snapshot.hasData) return Text('No Data');
           final quiz = snapshot.data;
@@ -68,11 +70,11 @@ class _QuizResultPageState extends State<QuizResultPage> {
                             child: Stack(
                               children: <Widget>[
                                 charts.PieChart(
-                                  chartResult(
-                                      quiz.correct, quiz.questions.length - quiz.correct),
+                                  chartResult(quiz.correct,
+                                      quiz.questions.length - quiz.correct),
                                   animate: true,
                                   animationDuration:
-                                      Duration(milliseconds: 500),
+                                      Duration(milliseconds: 1500),
                                   defaultRenderer: charts.ArcRendererConfig(
                                     arcWidth: 12,
                                     startAngle: 4 / 5 * 3.14,
@@ -83,7 +85,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
                                 Align(
                                   alignment: Alignment.center,
                                   child: Text(
-                                    "${(quiz.correct / quiz.questions.length * 100).toInt()} %",
+                                    "${(quiz.correct / quiz.total * 100).toInt()} %",
                                     style: TextStyle(
                                         fontSize: 30.0,
                                         color: Colors.white,
@@ -107,9 +109,10 @@ class _QuizResultPageState extends State<QuizResultPage> {
                               else
                                 Text(
                                   'FAIL',
-                                  style: Theme.of(context).textTheme.headline3.copyWith(
-                                    fontWeight: FontWeight.bold
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline3
+                                      .copyWith(fontWeight: FontWeight.bold),
                                 ),
                               Text('${quiz.correct} Correct answers'),
                             ],
@@ -134,6 +137,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
     );
   }
 
+  //TODO: Work on the performance of this listview
   Widget _buildListItem(Question question) {
     return Card(
       elevation: 0.2,

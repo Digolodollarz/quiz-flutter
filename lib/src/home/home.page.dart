@@ -31,13 +31,12 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Consumer<QuizController>(builder: (context, quizController, child) {
-        print(quizController.historyData);
         return Container(
           child: Column(
             children: [
               Visibility(
                 child: LinearProgressIndicator(),
-                visible: Provider.of<QuizController>(context).loading,
+                visible: quizController.loading,
               ),
               Container(
                 height: 256,
@@ -57,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text('Take quick quiz'),
               ),
               RaisedButton(
-                onPressed: () => result(context),
+                onPressed: () => result(context, quizController.lastResult),
                 child: Text('Open last result'),
               ),
               RaisedButton(
@@ -82,10 +81,8 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  result(context) async {
-    final quizUrl = await Provider.of<QuizController>(context, listen: false)
-        .generateQuiz();
-    // final quizUrl = 'users/tester/quizzes/2021-03-02T11:22:40.392107';
+  result(BuildContext context, String quizUrl) async {
+    print('Opening result');
     Navigator.push(
         context,
         MaterialPageRoute(

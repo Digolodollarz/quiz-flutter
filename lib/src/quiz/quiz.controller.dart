@@ -12,6 +12,10 @@ class QuizController with ChangeNotifier {
     this.fetchHistoric();
   }
 
+  String get lastResult {
+    return 'users/$uuid/quizzes/${this.historyData.last?.id}';
+  }
+
   generateQuiz() async {
     this.loading = true;
     this.notifyListeners();
