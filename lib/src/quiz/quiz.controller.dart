@@ -2,6 +2,7 @@ part of 'quiz.dart';
 
 class QuizController with ChangeNotifier {
   final _db = FirebaseFirestore.instance;
+  final uuid = FirebaseAuth.instance.currentUser.uid;
 
   bool loading = false;
 
@@ -33,17 +34,17 @@ class QuizController with ChangeNotifier {
         options.forEach(print);
       }
 
-      final now = DateTime.now().toIso8601String();
-      final quiz =
-          await _db.doc('users/tester/quizzes/$now').set({'created': now});
+      final now = DateTime.now().millisecondsSinceEpoch;
+      //final quiz = await
+      _db.doc('users/$uuid/quizzes/$now').set({'created': now});
 
       // await Future.wait(quizQuestions.map((e) {
       //   return _db.doc('users/tester/quizzes/$now/questions/${e.id}').set(e.toJson());
       // }));
-      await _db
-          .doc('users/tester/quizzes/$now')
+      _db
+          .doc('users/$uuid/quizzes/$now')
           .set({'questions': quizQuestions.map((e) => e.toJson()).toList()});
-      return 'users/tester/quizzes/$now';
+      return 'users/$uuid/quizzes/$now';
     } catch (e) {
       print(e);
       throw e;
@@ -69,8 +70,7 @@ class QuizController with ChangeNotifier {
         question.correct = question.answers
             .firstWhere((element) => element.selected == true)
             .correct;
-        if(question.correct)
-          quiz.correct++;
+        if (question.correct) quiz.correct++;
       } else {
         question.correct = false;
         quiz.completed = false;

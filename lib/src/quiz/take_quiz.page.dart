@@ -247,38 +247,41 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 
   CountdownTimer countDownTimer;
+  StreamSubscription<CountdownTimer> sub;
 
   @override
   void initState() {
     super.initState();
     this.startTimer();
+
+    countDownTimer = new CountdownTimer(
+      new Duration(minutes: _start),
+      new Duration(seconds: 1),
+    );
+
+    sub = countDownTimer.listen(null);
+    sub.onData((time) {
+      setState(() {
+        String twoDigits(int n) => n.toString().padLeft(2, "0");
+        String twoDigitMinutes =
+        twoDigits(time.remaining.inMinutes.remainder(60));
+        String twoDigitSeconds =
+        twoDigits(time.remaining.inSeconds.remainder(60));
+        current = '$twoDigitMinutes:$twoDigitSeconds';
+      });
+    });
+    sub.onDone(widget.onDone);
   }
 
   void startTimer() {
-    if (countDownTimer == null) {
-      countDownTimer = new CountdownTimer(
-        new Duration(minutes: _start),
-        new Duration(seconds: 1),
-      );
 
-      var sub = countDownTimer.listen(null);
-      sub.onData((time) {
-        setState(() {
-          String twoDigits(int n) => n.toString().padLeft(2, "0");
-          String twoDigitMinutes =
-              twoDigits(time.remaining.inMinutes.remainder(60));
-          String twoDigitSeconds =
-              twoDigits(time.remaining.inSeconds.remainder(60));
-          current = '$twoDigitMinutes:$twoDigitSeconds';
-        });
-      });
-
-      sub.onDone(widget.onDone);
-    }
   }
 
   @override
   void dispose() {
+    if(sub != null){
+      sub.cancel();
+    }
     super.dispose();
   }
 }
