@@ -6,6 +6,12 @@ class QuizController with ChangeNotifier {
 
   bool loading = false;
 
+  List<Quiz> historyData = [];
+
+  QuizController() {
+    this.fetchHistoric();
+  }
+
   generateQuiz() async {
     this.loading = true;
     this.notifyListeners();
@@ -16,7 +22,9 @@ class QuizController with ChangeNotifier {
           .toList();
       _lQs.shuffle();
       final quizQuestions = _lQs.take(25);
-      for (var question in quizQuestions) {
+
+      await Future.wait(quizQuestions.map((question) async {
+        print('Started waiting');
         List<Option> options =
             await _db.collection('questions/${question.id}/options').get().then(
                   (snap) => snap.docs
@@ -29,21 +37,17 @@ class QuizController with ChangeNotifier {
         for (int i = 0; i < options.length; i++)
           options[i].option = ['A', 'B', 'C', 'D'][i];
         question.answers = options;
-
-        print(question);
-        options.forEach(print);
-      }
+        print('Finished waiting');
+        return;
+      }));
 
       final now = DateTime.now().millisecondsSinceEpoch;
-      //final quiz = await
-      _db.doc('users/$uuid/quizzes/$now').set({'created': now});
-
-      // await Future.wait(quizQuestions.map((e) {
-      //   return _db.doc('users/tester/quizzes/$now/questions/${e.id}').set(e.toJson());
-      // }));
-      _db
-          .doc('users/$uuid/quizzes/$now')
-          .set({'questions': quizQuestions.map((e) => e.toJson()).toList()});
+      _db.doc('users/$uuid/quizzes/$now').set(
+        {
+          'created': DateTime.now().toIso8601String(),
+          'questions': quizQuestions.map((e) => e.toJson()).toList(),
+        },
+      );
       return 'users/$uuid/quizzes/$now';
     } catch (e) {
       print(e);
@@ -61,8 +65,6 @@ class QuizController with ChangeNotifier {
   }
 
   save(Quiz quiz, String path) async {
-    print("About to now");
-
     quiz.total = quiz.questions.length;
     quiz.correct = 0;
     quiz.questions.forEach((question) {
@@ -76,9 +78,38 @@ class QuizController with ChangeNotifier {
         quiz.completed = false;
       }
     });
-
-    await _db.doc(path).update(quiz.toMap());
-    print('Saved');
+    _db.doc(path).update(quiz.toMap());
     return;
+  }
+
+  fetchHistoric() async {
+    final uuid = FirebaseAuth.instance.currentUser.uid;
+    final historicSnapshots = _db
+        .collection('users/$uuid/quizzes')
+        .orderBy('id')
+        .limit(5)
+        .snapshots();
+    historicSnapshots.listen((snap) {
+      final data = snap.docs.map<Quiz>((e) {
+        final quiz = Quiz.fromSnapshot(e);
+        return quiz;
+      });
+      this.historyData = data.toList();
+      this.notifyListeners();
+    });
+  }
+
+  List<charts.Series<Quiz, String>> getHistoryGraph() {
+    return [
+      charts.Series<Quiz, String>(
+          id: 'Previous results',
+          data: this.historyData,
+          domainFn: (quiz, _) => quiz.created.toString(),
+          measureFn: (quiz, _) => quiz.correct,
+          colorFn: (quiz, _) =>
+              ((quiz.correct ?? 0) / (quiz.total ?? 25)) > 0.88
+                  ? charts.MaterialPalette.green.shadeDefault
+                  : charts.MaterialPalette.yellow.shadeDefault)
+    ];
   }
 }

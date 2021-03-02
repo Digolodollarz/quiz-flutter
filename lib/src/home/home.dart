@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quiz/src/auth/auth.dart';
 import 'package:quiz/src/abhishek_xidas/sensor_screens/sensor_setup.dart';
 import 'package:quiz/src/quiz/quiz.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 part 'home.page.dart';
 

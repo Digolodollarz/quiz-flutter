@@ -46,6 +46,11 @@ class Quiz {
     val["updated"] = DateTime.now().toIso8601String();
     return val;
   }
+
+  @override
+  String toString() {
+    return _$QuizToJson(this).toString();
+  }
 }
 
 @JsonSerializable(explicitToJson: true, includeIfNull: false)

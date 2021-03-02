@@ -30,28 +30,44 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Visibility(
-              child: LinearProgressIndicator(),
-              visible: Provider.of<QuizController>(context).loading,
-            ),
-            RaisedButton(
-              onPressed: () => random(context),
-              child: Text('Take quick quiz'),
-            ),
-            RaisedButton(
-              onPressed: () => result(context),
-              child: Text('Open last result'),
-            ),
-            RaisedButton(
-              onPressed: open,
-              child: Text('Manage Stuff'),
-            ),
-          ],
-        ),
-      ),
+      body: Consumer<QuizController>(builder: (context, quizController, child) {
+        print(quizController.historyData);
+        return Container(
+          child: Column(
+            children: [
+              Visibility(
+                child: LinearProgressIndicator(),
+                visible: Provider.of<QuizController>(context).loading,
+              ),
+              Container(
+                height: 256,
+                child: charts.BarChart(
+                  quizController.getHistoryGraph(),
+                  animate: true,
+                  defaultRenderer: new charts.BarRendererConfig(
+                      // By default, bar renderer will draw rounded bars with a constant
+                      // radius of 100.
+                      // To not have any rounded corners, use [NoCornerStrategy]
+                      // To change the radius of the bars, use [ConstCornerStrategy]
+                      cornerStrategy: const charts.ConstCornerStrategy(8)),
+                ),
+              ),
+              RaisedButton(
+                onPressed: () => random(context),
+                child: Text('Take quick quiz'),
+              ),
+              RaisedButton(
+                onPressed: () => result(context),
+                child: Text('Open last result'),
+              ),
+              RaisedButton(
+                onPressed: open,
+                child: Text('Manage Stuff'),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 
