@@ -1,16 +1,17 @@
 # quiz
 
-A Flutter quiz application.
+A Quiz Mobile application written in Flutter with a Firestore backend.
+
+## Content
+Learner's licence tests for Zimbabwean drivers. All content is in the public domain
 
 ## Getting Started
+- [ ] Create project on firestore
+- [ ] Complete adding Firebase to you application. You need to enable authentication on the project, at least Anonymous.
+- [ ] Add the quiz data
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## ToDo:
+- [ ] Complete the dashboard in Angular
+- [ ] Publish this application on Play Store
+- [ ] Develop the web based in Angular. Web support in Flutter sucks :-(
+- [ ] Publish this application on the App Store
