@@ -24,7 +24,6 @@ class QuizController with ChangeNotifier {
       final quizQuestions = _lQs.take(25);
 
       await Future.wait(quizQuestions.map((question) async {
-        print('Started waiting');
         List<Option> options =
             await _db.collection('questions/${question.id}/options').get().then(
                   (snap) => snap.docs
@@ -37,7 +36,6 @@ class QuizController with ChangeNotifier {
         for (int i = 0; i < options.length; i++)
           options[i].option = ['A', 'B', 'C', 'D'][i];
         question.answers = options;
-        print('Finished waiting');
         return;
       }));
 

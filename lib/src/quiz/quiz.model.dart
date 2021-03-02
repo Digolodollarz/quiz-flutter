@@ -82,7 +82,6 @@ class Question {
 
   factory Question.fromSnapshot(DocumentSnapshot snapshot) {
     final json = snapshot.data();
-    print(json);
     return Question(
       id: snapshot.id,
       title: json["title"],
@@ -100,7 +99,6 @@ class Question {
   }
 
   factory Question.fromJson(Map<String, dynamic> json) {
-    print(json);
     return _$QuestionFromJson(json);
   }
 

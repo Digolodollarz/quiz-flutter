@@ -207,10 +207,8 @@ class _TakeQuizPageState extends State<TakeQuizPage> {
   }
 
   _saveResult() async {
-    print('Savings');
     Provider.of<QuizController>(context, listen: false)
         .save((await _quiz), widget.quiz);
-    print('Donde');
     return;
   }
 
