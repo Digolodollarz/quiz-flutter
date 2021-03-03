@@ -8,60 +8,138 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Quiz'),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  value: 'logout',
-                  child: Text('Log Out'),
-                )
-              ];
-            },
-            onSelected: (String choice) {
-              switch (choice) {
-                case 'logout':
-                  Provider.of<AuthController>(context, listen: false).signOut();
-              }
-            },
-          ),
-        ],
-      ),
-      body: Consumer<QuizController>(builder: (context, quizController, child) {
-        return Container(
+    return Material(
+      color: Theme.of(context).primaryColor,
+      child:
+          Consumer<QuizController>(builder: (context, quizController, child) {
+        return SafeArea(
           child: Column(
             children: [
-              Visibility(
-                child: LinearProgressIndicator(),
-                visible: quizController.loading,
-              ),
-              Container(
-                height: 256,
-                child: charts.BarChart(
-                  quizController.getHistoryGraph(),
-                  animate: true,
-                  defaultRenderer: new charts.BarRendererConfig(
-                      // By default, bar renderer will draw rounded bars with a constant
-                      // radius of 100.
-                      // To not have any rounded corners, use [NoCornerStrategy]
-                      // To change the radius of the bars, use [ConstCornerStrategy]
-                      cornerStrategy: const charts.ConstCornerStrategy(8)),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+                child: Row(
+                  children: [
+                    Text(
+                      'Learn to Drive',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 36,
+                      ),
+                    ),
+                    Spacer(),
+                    PopupMenuButton(
+                      icon: Icon(
+                        Icons.account_circle_outlined,
+                        size: 36,
+                        color: Colors.white,
+                      ),
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            value: 'logout',
+                            child: Text('Log Out'),
+                          )
+                        ];
+                      },
+                      onSelected: (String choice) {
+                        switch (choice) {
+                          case 'logout':
+                            Provider.of<AuthController>(context, listen: false)
+                                .signOut();
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
-              RaisedButton(
-                onPressed: () => random(context),
-                child: Text('Take quick quiz'),
-              ),
-              RaisedButton(
-                onPressed: () => result(context, quizController.lastResult),
-                child: Text('Open last result'),
-              ),
-              RaisedButton(
-                onPressed: open,
-                child: Text('Manage Stuff'),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    Visibility(
+                      child: LinearProgressIndicator(),
+                      visible: quizController.loading,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      height: 226,
+                      margin: EdgeInsets.symmetric(vertical: 16),
+                      child: charts.BarChart(
+                        quizController.getHistoryGraph(),
+                        animate: true,
+                        defaultRenderer: new charts.BarRendererConfig(
+                            cornerStrategy:
+                                const charts.ConstCornerStrategy(8)),
+                        primaryMeasureAxis: charts.NumericAxisSpec(
+                            renderSpec: charts.NoneRenderSpec()),
+                        domainAxis: charts.OrdinalAxisSpec(
+                            renderSpec: charts.NoneRenderSpec()),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => random(context),
+                      child: Container(
+                        margin: EdgeInsets.only(top: 8, bottom: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.alarm,
+                                size: 48,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            Text(
+                              'Take quick quiz',
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => result(context, quizController.lastResult),
+                      child: Container(
+                        margin: EdgeInsets.only(top: 8, bottom: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.history,
+                                size: 48,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            Text(
+                              'Open last result',
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // RaisedButton(
+                    //   onPressed: open,
+                    //   child: Text('Manage Stuff'),
+                    // ),
+                  ],
+                ),
               ),
             ],
           ),

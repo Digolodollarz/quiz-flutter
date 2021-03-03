@@ -89,7 +89,7 @@ class QuizController with ChangeNotifier {
     final historicSnapshots = _db
         .collection('users/$uuid/quizzes')
         .orderBy('id')
-        .limit(5)
+        .limit(10)
         .snapshots();
     historicSnapshots.listen((snap) {
       final data = snap.docs.map<Quiz>((e) {
@@ -107,11 +107,13 @@ class QuizController with ChangeNotifier {
           id: 'Previous results',
           data: this.historyData,
           domainFn: (quiz, _) => quiz.created.toString(),
-          measureFn: (quiz, _) => quiz.correct,
+          measureFn: (quiz, _) => quiz.correct * 4,
           colorFn: (quiz, _) =>
               ((quiz.correct ?? 0) / (quiz.total ?? 25)) > 0.88
                   ? charts.MaterialPalette.green.shadeDefault
-                  : charts.MaterialPalette.yellow.shadeDefault)
+                  : ((quiz.correct ?? 0) / (quiz.total ?? 25)) > 0.64
+                      ? charts.MaterialPalette.yellow.shadeDefault
+                      : charts.MaterialPalette.red.shadeDefault)
     ];
   }
 }
