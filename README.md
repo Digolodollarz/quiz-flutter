@@ -1,7 +1,6 @@
-![Screenshot_20210303-101657](https://user-images.githubusercontent.com/11582986/109776776-a0408700-7c0b-11eb-8e74-fb46cc32c08a.png)
-![Screenshot_20210303-101821](https://user-images.githubusercontent.com/11582986/109776825-adf60c80-7c0b-11eb-9e89-13bf301fe9b2.png)
-![Screenshot_20210303-101714](https://user-images.githubusercontent.com/11582986/109776847-b51d1a80-7c0b-11eb-8967-f8aaa4e9e870.png)
+
 # quiz
+![image (2)](https://user-images.githubusercontent.com/11582986/109777455-67ed7880-7c0c-11eb-9c17-0c50087f4ac9.png)
 
 A Quiz Mobile application written in Flutter with a Firestore backend.
 
